@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fastapi-explore
+  namespace: fastapi-explore-namespace
+  labels:
+    app: fastapi-explore
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: fastapi-explore
+  template:
+    metadata:
+      labels:
+        app: fastapi-explore
+    spec:
+      containers:
+        - name: fastapi-explore-container
+          image: Fast_api_explore:latest
+          ports:
+            - containerPort: 8080
+          envFrom:
+            - configMapRef:
+                name: fastapi-explore-config
+            - secretRef:
+                name: fastapi-explore-secret
+          resources:
+            requests:
+              memory: "128Mi"
+              cpu: "250m"
+            limits:
+              memory: "256Mi"
+              cpu: "500m"
+          volumeMounts:
+            - mountPath: /data
+              name: data-storage
+      volumes:
+        - name: data-storage
+          persistentVolumeClaim:
+            claimName: fastapi-explore-pvc

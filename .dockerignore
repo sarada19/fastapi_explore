@@ -42,3 +42,4 @@ htmlcov/
 .tox/
 .nox/
 .pytest_cache/
+k8s/

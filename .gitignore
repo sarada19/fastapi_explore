@@ -26,3 +26,9 @@ share/python-wheels/
 .inst
 
 env/
+
+# don't ignore k8s
+!.k8s/
+!.helm-chart/
+
+.env
