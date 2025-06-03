@@ -1,14 +1,11 @@
 name: Python application
 
 on:
-  push:
-    branches: [ main ]
   pull_request:
     branches: [ main ]
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
 
     steps:
@@ -27,3 +24,11 @@ jobs:
     - name: Run tests
       run: |
         if [ -f pytest.ini ] || [ -d tests ]; then pytest; fi
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+    steps:
+      - name: Deploy step
+        run: echo "Deploying application on pull request..."
