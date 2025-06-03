@@ -1,77 +1,71 @@
-# 🚀 Exploring FastAPI Features Extensively
+# 🚀 FastAPI Feature Exploration
 
-Welcome! This repository is a comprehensive exploration of the **FastAPI** web framework. Here, you'll find practical examples and best practices for building robust, high-performance APIs with FastAPI.
-
-## 🌟 Key Features Demonstrated
-
-- **Request validation** with Pydantic models
-- **Dependency injection** for modular, testable code
-- **Middleware** for request/response processing
-- **Asynchronous route handling** for high concurrency
-- **Authentication & Authorization** (OAuth2, JWT)
-- **Background tasks** for non-blocking operations
-- **WebSockets** for real-time communication
-- **CORS handling** for secure cross-origin requests
-- **API versioning** strategies
-- **Integration with external services** (databases, third-party APIs)
-- **Custom exception handling** for better error management
-
-You'll also learn how to **run the app locally**, **containerize it with Docker**, and **deploy it on Kubernetes**.
+Welcome! This repository is a deep dive into the **FastAPI** web framework, featuring practical examples and best practices for building robust, high-performance APIs.
 
 ---
 
-## 🧪 Running the App Locally
+## 🌟 Features Covered
+
+- **Request validation** with Pydantic
+- **Dependency injection** for modular code
+- **Middleware** for request/response processing
+- **Async route handling** for concurrency
+- **Authentication & Authorization** (OAuth2, JWT)
+- **Background tasks** for non-blocking ops
+- **WebSockets** for real-time features
+- **CORS** for secure cross-origin requests
+- **API versioning**
+- **External service integration** (DBs, APIs)
+- **Custom exception handling**
+
+You’ll also learn to **run locally**, **containerize with Docker**, and **deploy on Kubernetes**.
+
+---
+
+## 🧪 Local Development
 
 1. **Create a virtual environment:**
-
     ```bash
     python -m venv venv
-    source venv/bin/activate  # On Windows: venv\Scripts\activate
+    source venv/bin/activate  # Windows: venv\Scripts\activate
     ```
 
 2. **Install dependencies:**
-
     ```bash
     pip install -r requirements.txt
     ```
 
-3. **Start the FastAPI server:**
-
+3. **Start the server:**
     ```bash
     uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
     ```
 
-4. **Access the interactive API docs:**
+4. **API Docs:**
     - [Swagger UI](http://localhost:8000/docs)
     - [ReDoc](http://localhost:8000/redoc)
 
 ---
 
-## 🐳 Docker Deployment
+## 🐳 Docker
 
-1. **Build the Docker image:**
-
+1. **Build image:**
     ```bash
     docker build -t fastapi-app .
     ```
 
-2. **Run the Docker container:**
-
+2. **Run container:**
     ```bash
     docker run -d -p 8000:8000 fastapi-app
     ```
 
-3. **Access the app in your browser:**
-    - [http://localhost:8000/docs](http://localhost:8000/docs)
+3. **Browse:** [http://localhost:8000/docs](http://localhost:8000/docs)
 
 ---
 
-## ☸️ Kubernetes Deployment
+## ☸️ Kubernetes
 
-1. **Create a Kubernetes Deployment and Service**
-
-    Save the following YAML as `k8s/deployment.yaml`:
-
+1. **Create deployment and service:**  
+   Save as `k8s/deployment.yaml`:
     ```yaml
     apiVersion: apps/v1
     kind: Deployment
@@ -80,18 +74,18 @@ You'll also learn how to **run the app locally**, **containerize it with Docker*
     spec:
       replicas: 2
       selector:
-         matchLabels:
-            app: fastapi
+        matchLabels:
+          app: fastapi
       template:
-         metadata:
-            labels:
-              app: fastapi
-         spec:
-            containers:
+        metadata:
+          labels:
+            app: fastapi
+        spec:
+          containers:
             - name: fastapi
               image: fastapi-app:latest
               ports:
-              - containerPort: 8000
+                - containerPort: 8000
     ---
     apiVersion: v1
     kind: Service
@@ -99,67 +93,117 @@ You'll also learn how to **run the app locally**, **containerize it with Docker*
       name: fastapi-service
     spec:
       selector:
-         app: fastapi
+        app: fastapi
       ports:
-      - protocol: TCP
-         port: 80
-         targetPort: 8000
+        - protocol: TCP
+          port: 80
+          targetPort: 8000
       type: LoadBalancer
     ```
 
-2. **Deploy to your Kubernetes cluster:**
-
+2. **Deploy:**
     ```bash
     kubectl apply -f k8s/deployment.yaml
     ```
 
-3. **Access the service:**
-    - If using Minikube: `minikube service fastapi-service`
-    - Otherwise, use the external IP provided by your cloud provider.
+3. **Access:**
+    - Minikube: `minikube service fastapi-service`
+    - Or use your cloud provider’s external IP.
 
 ---
 
-## 🔁 CI/CD with GitHub Actions (Coming Soon)
+## 📊 Observability: Logging & Metrics
 
-A GitHub Actions workflow will soon be added to automate:
+### ELK Stack (Elasticsearch, Logstash, Kibana)
 
-- ✅ Code linting and formatting
-- ✅ Test execution
-- ✅ Docker image build & push (DockerHub or GitHub Container Registry)
-- ✅ Kubernetes deployment
+- **JSON logs** for easy parsing
+- **Log shipping** via Filebeat/Fluentd
+- **Centralized search** with Elasticsearch
+- **Visualization** in Kibana
 
+**Sample Docker Compose:**
+```yaml
+services:
+  fastapi:
+    image: fastapi-app:latest
+    logging:
+      driver: "json-file"
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.12.0
+    environment:
+      - discovery.type=single-node
+    ports:
+      - "9200:9200"
+  logstash:
+    image: docker.elastic.co/logstash/logstash:8.12.0
+    ports:
+      - "5044:5044"
+  kibana:
+    image: docker.elastic.co/kibana/kibana:8.12.0
+    ports:
+      - "5601:5601"
+```
 
-## 🧪 Pytest Integration (Coming Soon)
+### Grafana & Prometheus
 
-Automated testing is essential for maintaining code quality and reliability. This project uses **pytest** for writing and running tests.
+- **Metrics** via [prometheus_fastapi_instrumentator](https://github.com/trallard/prometheus-fastapi-instrumentator)
+- **Prometheus** scrapes `/metrics`
+- **Grafana** dashboards for API performance
 
-### How to Run Tests Locally
+**Sample Docker Compose:**
+```yaml
+services:
+  prometheus:
+    image: prom/prometheus:latest
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+    ports:
+      - "9090:9090"
+  grafana:
+    image: grafana/grafana:latest
+    ports:
+      - "3000:3000"
+```
 
-1. **Install test dependencies:**
+**Prometheus Scrape Config:**
+```yaml
+scrape_configs:
+  - job_name: 'fastapi'
+    static_configs:
+      - targets: ['fastapi:8000']
+```
 
-    ```bash
-    pip install -r requirements.txt
-    ```
+> See the `monitoring/` directory for ready-to-use configs and dashboards.
 
-2. **Run all tests:**
+---
 
+## 🔁 CI/CD with GitHub Actions *(Coming Soon)*
+
+Automated workflow for:
+
+- Linting & formatting
+- Test execution
+- Docker image build & push
+- Kubernetes deployment
+
+---
+
+## 🧪 Pytest Integration *(Coming Soon)*
+
+- **Test files:** in `tests/`, named `test_*.py`
+- **Run tests:**
     ```bash
     pytest
     ```
-
-3. **View coverage (optional):**
-
+- **Coverage:**
     ```bash
     pytest --cov=app
     ```
 
-Test files are located in the `tests/` directory and follow the `test_*.py` naming convention.
-
-Pytest is also integrated into the CI/CD workflow to ensure all tests pass before deployment.
-
-Stay tuned for updates!
+Pytest will be part of the CI/CD workflow.
 
 ---
 
-**Want more?**  
-Let me know if you’d like to see the actual `.github/workflows/deploy.yml` CI/CD workflow or Helm chart templates included in this repository.
+**Questions or requests?**  
+Let me know if you want to see the actual `.github/workflows/deploy.yml` or Helm chart templates included.
+
