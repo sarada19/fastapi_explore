@@ -177,7 +177,7 @@ scrape_configs:
 
 ---
 
-## 🔁 CI/CD with GitHub Actions *(Coming Soon)*
+## 🔁 CI/CD with GitHub Actions
 
 Automated workflow for:
 
