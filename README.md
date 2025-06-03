@@ -128,6 +128,35 @@ A GitHub Actions workflow will soon be added to automate:
 - ✅ Docker image build & push (DockerHub or GitHub Container Registry)
 - ✅ Kubernetes deployment
 
+
+## 🧪 Pytest Integration (Coming Soon)
+
+Automated testing is essential for maintaining code quality and reliability. This project uses **pytest** for writing and running tests.
+
+### How to Run Tests Locally
+
+1. **Install test dependencies:**
+
+    ```bash
+    pip install -r requirements.txt
+    ```
+
+2. **Run all tests:**
+
+    ```bash
+    pytest
+    ```
+
+3. **View coverage (optional):**
+
+    ```bash
+    pytest --cov=app
+    ```
+
+Test files are located in the `tests/` directory and follow the `test_*.py` naming convention.
+
+Pytest is also integrated into the CI/CD workflow to ensure all tests pass before deployment.
+
 Stay tuned for updates!
 
 ---
