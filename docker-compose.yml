@@ -21,7 +21,7 @@ services:
     ports:
       - "5000:5000"
     volumes:
-      - ./logstash.conf:/usr/share/logstash/pipeline/logstash.conf:ro
+      - ./logstash.pipeline.conf:/usr/share/logstash/pipeline/logstash.conf:ro
     networks:
       - elk-net
 
@@ -40,7 +40,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: fastapi_staging_app
+    container_name: staging_chat_agent
     depends_on:
       - logstash
     profiles:
@@ -56,7 +56,7 @@ services:
     networks:
       - elk-net
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      test: ["CMD", "curl", "-f", "http://localhost:8080/docs/"]
       interval: 30s
       timeout: 10s
       retries: 5
@@ -65,7 +65,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: fastapi_dev_app
+    container_name: dev_chat_agent
     depends_on:
       - logstash
     profiles:
@@ -85,7 +85,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: fastapi_prod_app
+    container_name: prod_chat_agent
     depends_on:
       - logstash
     profiles:
