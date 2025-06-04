@@ -35,3 +35,4 @@ env/
 .env.staging
 .env.prod
 .env.dev
+*.log
