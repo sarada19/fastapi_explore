@@ -2,11 +2,7 @@ import pkgutil
 import importlib
 from fastapi import FastAPI
 from project import app as app_pkg
-from project.config.settings import setup_logging
-setup_logging()
-
-import logging  # noqa: E402
-logger = logging.getLogger("fastapi_logger")
+from project.imports.logging_conf import logger
 
 # Create FastAPI app
 app = FastAPI()
