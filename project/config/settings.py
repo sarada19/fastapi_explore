@@ -5,7 +5,7 @@ import logging.handlers
 from dotenv import load_dotenv
 
 # Load env vars
-ENV_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), '.env.staging')
+ENV_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), '.env.dev')
 load_dotenv(dotenv_path=ENV_PATH)
 
 DEBUG = os.getenv('DEBUG', 'False').lower() == 'true'
