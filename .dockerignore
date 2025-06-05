@@ -1,4 +1,4 @@
-# Python
+# Byte-compiled / optimized / DLL Python files
 __pycache__/
 *.py[cod]
 *.pyo
@@ -7,39 +7,64 @@ __pycache__/
 
 # Virtual environments
 env/
-venv/
 ENV/
+venv/
 .venv/
-.env/
 
-# Distribution / packaging
+# Environment files
+.env
+.env.*
+!.env.example  # keep example env if you have one
+
+# Packaging
 build/
 dist/
 *.egg-info/
 .eggs/
 
-# VS Code settings
-.vscode/
+# Installer logs
+pip-log.txt
+pip-delete-this-directory.txt
 
-# Git
-.git/
-.gitignore
-
-# OS files
-.DS_Store
-Thumbs.db
-
-# Docker files
-Dockerfile
-docker-compose.yml
-
-# Logs
-*.log
-
-# Test output
+# Test output and coverage
 htmlcov/
 .coverage
 .tox/
 .nox/
 .pytest_cache/
+.cache/
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# IDEs and editors
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# OS metadata
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Git
+.git/
+.gitignore
+
+# Docker files (only if you never COPY them)
+Dockerfile
+docker-compose.yml
+
+# Kubernetes configs
 k8s/
+
+# Logs
+*.log
+logs/
+
+# Misc
+*.bak
+*.swp
+*.tmp
+*.orig
