@@ -1,4 +1,5 @@
 import os
+import json
 import logging
 import logging.config
 import logging.handlers
@@ -37,6 +38,17 @@ class JSONTcpHandler(logging.handlers.SocketHandler):
             formatted = formatted.encode('utf-8')
         return formatted + b'\n'
 
+class JsonFormatter(logging.Formatter):
+    def format(self, record):
+        log_record = {
+            'timestamp': self.formatTime(record, self.datefmt),
+            'level': record.levelname,
+            'name': record.name,
+            'message': record.getMessage(),
+        }
+        return json.dumps(log_record)
+    
+
 LOGGING_CONFIG = {
     'version': 1,
     'disable_existing_loggers': False,
@@ -52,8 +64,11 @@ LOGGING_CONFIG = {
         'standard': {
             'format': '%(asctime)s - %(name)s - %(levelname)s - %(message)s',
         },
+        # 'json': {
+        #     'format': '{"timestamp": "%(asctime)s", "level": "%(levelname)s", "name": "%(name)s", "message": "%(message)s"}'
+        # },
         'json': {
-            'format': '{"timestamp": "%(asctime)s", "level": "%(levelname)s", "name": "%(name)s", "message": "%(message)s"}'
+            '()': JsonFormatter,
         },
         'logstash': {
             '()': 'logstash_formatter.LogstashFormatter',
@@ -79,11 +94,11 @@ LOGGING_CONFIG = {
             'filters': ['env_filter'],
         },
         'logstash': {
-            'class': 'logging.handlers.SocketHandler',
+            '()': JSONTcpHandler,
             'level': LOG_LEVEL,
             'host': LOGSTASH_HOST,
             'port': LOGSTASH_PORT,
-            'formatter': 'logstash',
+            'formatter': 'json',
             'filters': ['env_filter'],
         },
         'json_tcp': {

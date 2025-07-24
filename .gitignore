@@ -32,7 +32,5 @@ env/
 !.helm-chart/
 
 .env
-.env.staging
-.env.prod
-.env.dev
+.env.*
 *.log

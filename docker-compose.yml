@@ -1,109 +1,112 @@
-version: '3.9'
+  version: '3.9'
 
-services:
-  elasticsearch:
-    image: docker.elastic.co/elasticsearch/elasticsearch:8.9.0
-    environment:
-      - discovery.type=single-node
-      - ES_JAVA_OPTS=-Xms512m -Xmx512m
-      - xpack.security.enabled=false
-    ports:
-      - "9200:9200"
-    volumes:
-      - esdata:/usr/share/elasticsearch/data
-    networks:
-      - elk-net
+  services:
+    elasticsearch:
+      image: docker.elastic.co/elasticsearch/elasticsearch:8.9.0
+      environment:
+        - discovery.type=single-node
+        - ES_JAVA_OPTS=-Xms512m -Xmx512m
+        - xpack.security.enabled=true
+        - xpack.security.transport.ssl.enabled=false
+      ports:
+        - "9200:9200"
+      volumes:
+        - esdata:/usr/share/elasticsearch/data
+      networks:
+        - elk-net
 
-  logstash:
-    image: docker.elastic.co/logstash/logstash:8.9.0
-    depends_on:
-      - elasticsearch
-    ports:
-      - "5000:5000"
-    volumes:
-      - ./logstash.pipeline.conf:/usr/share/logstash/pipeline/logstash.conf:ro
-    networks:
-      - elk-net
+    logstash:
+      image: docker.elastic.co/logstash/logstash:8.9.0
+      depends_on:
+        - elasticsearch
+      ports:
+        - "5000:5000"
+      volumes:
+        - ./logstash.pipeline.conf:/usr/share/logstash/pipeline/logstash.conf:ro
+      networks:
+        - elk-net
 
-  kibana:
-    image: docker.elastic.co/kibana/kibana:8.9.0
-    depends_on:
-      - elasticsearch
-    ports:
-      - "5601:5601"
-    environment:
-      ELASTICSEARCH_HOSTS: "http://elasticsearch:9200"
-    networks:
-      - elk-net
+    kibana:
+      image: docker.elastic.co/kibana/kibana:8.9.0
+      depends_on:
+        - elasticsearch
+      ports:
+        - "5601:5601"
+      environment:
+        ELASTICSEARCH_HOSTS: "http://elasticsearch:9200"
+        ELASTICSEARCH_USERNAME: "kibana_system"
+        ELASTICSEARCH_PASSWORD: "eqf-ywS9WLaPpXq8GK9="
+      networks:
+        - elk-net
 
-  app-staging:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    container_name: staging_chat_agent
-    depends_on:
-      - logstash
-    profiles:
-      - staging
-    env_file:
-      - .env.staging
-    environment:
-      - LOGSTASH_HOST=logstash
-      - LOGSTASH_PORT=5000
-      - ENVIRONMENT=staging
-    ports:
-      - "8080:8080"
-    networks:
-      - elk-net
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8080/docs/"]
-      interval: 30s
-      timeout: 10s
-      retries: 5
+    app-staging:
+      build:
+        context: .
+        dockerfile: Dockerfile
+      container_name: staging_chat_agent
+      depends_on:
+        - logstash
+      profiles:
+        - staging
+      env_file:
+        - .env.staging
+      environment:
+        - LOGSTASH_HOST=logstash
+        - LOGSTASH_PORT=5000
+        - ENVIRONMENT=staging
+      ports:
+        - "8080:8080"
+      networks:
+        - elk-net
+      healthcheck:
+        test: ["CMD", "curl", "-f", "http://localhost:8080/docs/"]
+        interval: 30s
+        timeout: 10s
+        retries: 5
 
-  app-dev:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    container_name: dev_chat_agent
-    depends_on:
-      - logstash
-    profiles:
-      - dev
-    env_file:
-      - .env.dev
-    environment:
-      - LOGSTASH_HOST=logstash
-      - LOGSTASH_PORT=5000
-      - ENVIRONMENT=dev
-    ports:
-      - "8081:8080"
-    networks:
-      - elk-net
+    app-dev:
+      build:
+        context: .
+        dockerfile: Dockerfile
+      container_name: dev_chat_agent
+      depends_on:
+        - logstash
+      profiles:
+        - dev
+      env_file:
+        - .env.dev
+      environment:
+        - LOGSTASH_HOST=logstash
+        - LOGSTASH_PORT=5000
+        - ENVIRONMENT=dev
+      ports:
+        - "8081:8080"
+      networks:
+        - elk-net
 
-  app-prod:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    container_name: prod_chat_agent
-    depends_on:
-      - logstash
-    profiles:
-      - prod
-    env_file:
-      - .env.prod
-    environment:
-      - LOGSTASH_HOST=logstash
-      - LOGSTASH_PORT=5000
-      - ENVIRONMENT=prod
-    ports:
-      - "8082:8080"
-    networks:
-      - elk-net
+    app-prod:
+      build:
+        context: .
+        dockerfile: Dockerfile
+      container_name: prod_chat_agent
+      depends_on:
+        - logstash
+      profiles:
+        - prod
+      env_file:
+        - .env.prod
+      environment:
+        - LOGSTASH_HOST=logstash
+        - LOGSTASH_PORT=5000
+        - ENVIRONMENT=prod
+      ports:
+        - "8082:8080"
+      networks:
+        - elk-net
 
-volumes:
-  esdata:
+  volumes:
+    esdata:
 
-networks:
-  elk-net:
-    driver: bridge
+  networks:
+    elk-net:
+      driver: bridge

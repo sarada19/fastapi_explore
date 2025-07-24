@@ -1,5 +1,5 @@
 # Use official Python image
-FROM python:3.11-slim-bullseye
+FROM python:3.10-alpine
 
 # Set environment variables
 ENV PYTHONDONTWRITEBYTECODE=1 \
@@ -10,11 +10,14 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
 WORKDIR /app
 
 # Upgrade system packages to address vulnerabilities
-RUN apt-get update && \
-    apt-get upgrade -y && \
-    apt-get install -y gcc libpq-dev && \
-    apt-get clean && \
-    rm -rf /var/lib/apt/lists/*
+# RUN apt-get update && \
+#     apt-get upgrade -y && \
+#     apt-get install -y gcc libpq-dev && \
+#     apt-get clean && \
+#     rm -rf /var/lib/apt/lists/*
+
+RUN apk update && \
+    apk add --no-cache gcc musl-dev libpq libffi-dev postgresql-dev
 
 # Copy requirements and install
 COPY requirements.txt .
